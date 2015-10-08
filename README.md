@@ -6,7 +6,7 @@
  ```json
  {
     "require": {
-        "vcomedia/common": "dev-master"
+        "vcomedia/php-common": "dev-master"
     }
  }
 ```
