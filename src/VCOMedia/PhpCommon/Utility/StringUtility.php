@@ -2,57 +2,11 @@
 namespace VCOMedia\PhpCommon\Utility;
 
 class StringUtility
-{
-    public static function getSHA1Filename ($filename)
-    {
-        $filename = sha1(uniqid(rand(), true)) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
-        return $filename;
-    }
-    
+{   
     public static function convert_smart_quotes($string) {
         $search = array(chr(145),chr(146),chr(147),chr(148),chr(151));
         $replace = array("'","'",'"','"','-');
         return str_replace($search, $replace, $string);
-    }
-
-    public static function sanitize_file_name ($filename)
-    {
-        $filename_raw = $filename;
-        $special_chars = array("?" , "[" , "]" , "/" , "\\" , "=" , "<" , ">" , ":" , ";" , "," , "'" , "\"" , "&" , "$" , "#" , "*" , "(" , ")" , "|" , "~" , "`" , "!" , "{" , "}" , chr(0));
-        $filename = str_replace($special_chars, '', $filename);
-        $filename = self::removeAccents($filename);
-        $filename = preg_replace('/[\s-]+/', '-', $filename);
-        $filename = trim($filename, '.-_');
-        $filename = self::convert_smart_quotes($filename);
-        
-        // Split the filename into a base and extension[s]
-        $parts = explode('.', $filename);
-        // Return if only one extension
-        if (count($parts) <= 2)
-            return $filename;
-            // Process multiple extensions
-        $filename = array_shift($parts);
-        $extension = array_pop($parts);
-        $mimes = static::get_allowed_mime_types();
-        // Loop over any intermediate extensions.  Munge them with a trailing underscore if they are a 2 - 5 character
-        // long alpha string not in the extension whitelist.
-        foreach ((array) $parts as $part) {
-            $filename .= '.' . $part;
-            if (preg_match("/^[a-zA-Z]{2,5}\d?$/", $part)) {
-                $allowed = false;
-                foreach ($mimes as $ext_preg => $mime_match) {
-                    $ext_preg = '!(^' . $ext_preg . ')$!i';
-                    if (preg_match($ext_preg, $part)) {
-                        $allowed = true;
-                        break;
-                    }
-                }
-                if (! $allowed)
-                    $filename .= '_';
-            }
-        }
-        $filename .= '.' . $extension;
-        return $filename;
     }
 
     public static function createSlug($str, $removeCommonWords = false) {
@@ -131,25 +85,8 @@ class StringUtility
         return str_replace($a, $b, $str);
     }
 
-    public static function truncate ($string, $length, $stopanywhere = false)
-    {
-        //truncates a string to a certain char length, stopping on a word if not specified otherwise.
-        if (strlen($string) > $length) {
-            //limit hit!
-            $string = substr($string, 0, ($length - 3));
-            if ($stopanywhere) {
-                //stop anywhere
-                $string .= '...';
-            } else {
-                //stop on a word.
-                $string = substr($string, 0, strrpos($string, ' ')) . '...';
-            }
-        }
-        return $string;
-    }
 
-
-    /**
+ /**
  * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
  *
  * @param string $text String to truncate.
@@ -160,7 +97,7 @@ class StringUtility
  *
  * @return string Trimmed string.
  */
-    public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true) {
+    public static function truncate($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true) {
 	if ($considerHtml) {
 		// if the plain text is shorter than the maximum length, return the whole text
 		if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
@@ -294,92 +231,43 @@ class StringUtility
         return $pee;
     }
 
-    private static function get_allowed_mime_types() {
-
-        $mimes = array(
-        'jpg|jpeg|jpe' => 'image/jpeg',
-        'gif' => 'image/gif',
-        'png' => 'image/png',
-        'bmp' => 'image/bmp',
-        'tif|tiff' => 'image/tiff',
-        'ico' => 'image/x-icon',
-        'asf|asx|wax|wmv|wmx' => 'video/asf',
-        'avi' => 'video/avi',
-        'divx' => 'video/divx',
-        'flv' => 'video/x-flv',
-        'mov|qt' => 'video/quicktime',
-        'mpeg|mpg|mpe' => 'video/mpeg',
-        'txt|c|cc|h' => 'text/plain',
-        'rtx' => 'text/richtext',
-        'css' => 'text/css',
-        'htm|html' => 'text/html',
-        'mp3|m4a' => 'audio/mpeg',
-        'mp4|m4v' => 'video/mp4',
-        'ra|ram' => 'audio/x-realaudio',
-        'wav' => 'audio/wav',
-        'ogg' => 'audio/ogg',
-        'mid|midi' => 'audio/midi',
-        'wma' => 'audio/wma',
-        'rtf' => 'application/rtf',
-        'js' => 'application/javascript',
-        'pdf' => 'application/pdf',
-        'doc|docx' => 'application/msword',
-        'pot|pps|ppt|pptx' => 'application/vnd.ms-powerpoint',
-        'wri' => 'application/vnd.ms-write',
-        'xla|xls|xlsx|xlt|xlw' => 'application/vnd.ms-excel',
-        'mdb' => 'application/vnd.ms-access',
-        'mpp' => 'application/vnd.ms-project',
-        'swf' => 'application/x-shockwave-flash',
-        'class' => 'application/java',
-        'tar' => 'application/x-tar',
-        'zip' => 'application/zip',
-        'gz|gzip' => 'application/x-gzip',
-        'exe' => 'application/x-msdownload',
-        // openoffice formats
-        'odt' => 'application/vnd.oasis.opendocument.text',
-        'odp' => 'application/vnd.oasis.opendocument.presentation',
-        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
-        'odg' => 'application/vnd.oasis.opendocument.graphics',
-        'odc' => 'application/vnd.oasis.opendocument.chart',
-        'odb' => 'application/vnd.oasis.opendocument.database',
-        'odf' => 'application/vnd.oasis.opendocument.formula',
-        );
-
-        return $mimes;
-    }
-
-    public static function generatePassword($length = 8) {
-        $password = "";
-
-        $possible = "2346789bcdfghjkmnpqrtvwxyzBCDFGHJKLMNPQRTVWXYZ";
-        $maxlength = strlen($possible);
-
-        if ($length > $maxlength) {
-            $length = $maxlength;
-        }
-
-        $i = 0;
-
-        while ($i < $length) {
-            $char = substr($possible, mt_rand(0, $maxlength-1), 1);
-
-            // have we already used this character in $password?
-            if (!strstr($password, $char)) {
-                $password .= $char;
-                $i++;
-            }
-        }
+    // credit: https://gist.github.com/tylerhall/521810
+    // Generates a strong password of N length containing at least one lower case letter,
+    // one uppercase letter, one digit, and one special character. The remaining characters
+    // in the password are chosen at random from those four sets.
+    //
+    // The available characters in each set are user friendly - there are no ambiguous
+    // characters such as i, l, 1, o, 0, etc. This, coupled with the $add_dashes option,
+    // makes it much easier for users to manually type or speak their passwords.
+    public static function generatePassword($length = 9, $available_sets = 'luds') {
+    	$sets = array();
+    	if(strpos($available_sets, 'l') !== false)
+    		$sets[] = 'abcdefghjkmnpqrstuvwxyz';
+    	if(strpos($available_sets, 'u') !== false)
+    		$sets[] = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+    	if(strpos($available_sets, 'd') !== false)
+    		$sets[] = '23456789';
+    	if(strpos($available_sets, 's') !== false)
+    		$sets[] = '!@#$%&*?';
+    	$all = '';
+    	$password = '';
+    	foreach($sets as $set) {
+    		$password .= $set[array_rand(str_split($set))];
+    		$all .= $set;
+    	}
+    	$all = str_split($all);
+    	for($i = 0; $i < $length - count($sets); $i++)
+    		$password .= $all[array_rand($all)];
+    	$password = str_shuffle($password);
         return $password;
     }
 
-    public static function startsWith($haystack, $needle)
-    {
+    public static function startsWith($haystack, $needle) {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
-    public static function endsWith($haystack, $needle)
-    {
+    public static function endsWith($haystack, $needle) {
         $length = strlen($needle);
         if ($length == 0) {
             return true;
@@ -396,14 +284,12 @@ class StringUtility
         }
     }
 
-    public static function renderHtmlDataAttributes(array $attributes) {
+    public static function renderHtmlAttributes(array $attributes) {
         $output = '';
 
         if(count($attributes ) > 0 ) {
             foreach ($attributes as $key => $value) {
-                if(static::startsWith($key, 'data-')) {
-                    $output .= $key . '="' . $value . '" ';
-                }
+                $output .= $key . '="' . $value . '" ';
             }
         }
 
@@ -601,24 +487,17 @@ class StringUtility
     	return $matches[1] . "<a href=\"mailto:$email\">$email</a>";
     }
 
-    public static function make_clickable($ret) {
+    public static function makeLinksAnchors($ret) {
     	$ret = ' ' . $ret;
     	// in testing, using arrays here was found to be faster
-    	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is',  'VCOMedia\Common\Utilities\StringUtility::_make_url_clickable_cb', $ret);
-    	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', 'VCOMedia\Common\Utilities\StringUtility::_make_web_ftp_clickable_cb', $ret);
-    	$ret = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', 'VCOMedia\Common\Utilities\StringUtility::_make_email_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is',  'StringUtility::_make_url_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', 'StringUtility::_make_web_ftp_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', 'StringUtility::_make_email_clickable_cb', $ret);
 
     	// this one is not in an array because we need it to run last, for cleanup of accidental links within links
     	$ret = preg_replace("#(<a( [^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i", "$1$3</a>", $ret);
     	$ret = trim($ret);
     	return $ret;
-    }
-    
-    public static function getQueryVariables($url) {
-        //TODO: is this even used anywhere?  i dont think it works
-        $query = parse_url(trim($url), PHP_URL_QUERY);
-        $args = array();
-        return parse_str($query, $args);
     }
     
     public static function paramFromUrl($key,$url, $default = null) {
@@ -628,12 +507,7 @@ class StringUtility
         return isset($args[$key]) ? $args[$key] : $default;
     }
     
-    public static function isUrlValid($url) {
-        $urlValidator = new FENGJUNK_Validate_Url();
-        return $urlValidator->isValid($url);
-    } 
-    
-    public static function guid(){
+    public static function generateGUID(){
         if (function_exists('com_create_guid')){
             return com_create_guid();
         }else{
