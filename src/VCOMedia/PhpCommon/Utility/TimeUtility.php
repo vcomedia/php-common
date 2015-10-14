@@ -1,12 +1,9 @@
 <?php
 namespace VCOMedia\PhpCommon\Utility;
 
-use Zend\Mvc\I18n\Translator;
-
-//TODO:  remove zend dependency 
 class TimeUtility {
 
-    public static function ago($time, Translator $translator) {
+    public static function ago($time, TranslatorInterface $translator) {
        $lengths = array("60","60","24","7","4.35","12","10");
        $now = time();
        $difference = $now - $time;
@@ -31,4 +28,29 @@ class TimeUtility {
 
        return "$difference $periods[$j] $tense";
     }
+
+    public function timezoneOffsetSecondsToOffset($seconds) {
+        $offset  = $seconds < 0 ? '-' : '+';
+        $offset .= gmdate('H:i', abs($seconds));
+        return $offset;
+    }
+    
+    public static function timezoneOffsetSecondsToTimezoneName($seconds) {
+        $timezoneAbbreviation = timezone_name_from_abbr('', $seconds, 1);
+        if($timezoneAbbreviation === false) {
+            $timezoneAbbreviation = timezone_name_from_abbr('', $seconds, 0);
+        }        
+        return $timezoneAbbreviation;
+    }
+    
+    public static function timezoneOffsetSecondsToTimezoneAbbreviation($seconds) {
+        $timezoneName = static::timezoneOffsetSecondsToTimezoneName($seconds);
+        $dt = new DateTime('now', new DateTimeZone($timezoneName));
+        return $dt->format('T');
+    }
+}
+
+interface TranslatorInterface {
+    public function translatePlural($singular, $plural, $number, $textDomain = 'default', $locale = null);
+    public function translate($message, $textDomain = 'default', $locale = null);
 }
