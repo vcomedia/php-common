@@ -1,16 +1,16 @@
 <?php
-namespace VCOMedia\PhpCommon\Utility;
+namespace VCOMedia\PhpCommon\Util;
 
-class ArrayUtility {
+class ArrayUtil {
     
 	public static function mergeOnKey(array $array1, array $array2, $key) {
-		$array1 = self::removeDuplicatesByKeyInArray($array1, $key);
-		$array2 = self::removeDuplicatesByKeyInArray($array2, $key);
+		$array1 = static::removeDuplicatesByKeyInArray($array1, $key);
+		$array2 = static::removeDuplicatesByKeyInArray($array2, $key);
 
 		$temparray = array();
 		if (count($array1) > 0) {
 			foreach ($array1 as $val) {
-				if (is_array($val) && array_key_exists($key, $val) && !self::valueExistsForKeyInArray($array2, $key, $val[$key])) {
+				if (is_array($val) && array_key_exists($key, $val) && !static::valueExistsForKeyInArray($array2, $key, $val[$key])) {
 					$temparray[] = $val;
 				}
 			}
@@ -53,7 +53,7 @@ class ArrayUtility {
 
 		$temp = array();
 		for ($ii = count($array) - 1; $ii >= 0; $ii--) {
-			if (is_array($array[$ii]) && array_key_exists($key, $array[$ii]) && !self::valueExistsForKeyInArray($temp, $key, $array[$ii][$key]))
+			if (is_array($array[$ii]) && array_key_exists($key, $array[$ii]) && !static::valueExistsForKeyInArray($temp, $key, $array[$ii][$key]))
 				$temp[] = $array[$ii];
 		}
 
@@ -65,7 +65,7 @@ class ArrayUtility {
 			$out = array();
 			foreach ($value as $k => $v) {
 				if (is_array($v)) {
-					$out[$k] = self::filterLeafs($v, $filters);
+					$out[$k] = static::filterLeafs($v, $filters);
 				} else {
 					foreach ($filters as $filter) {
 						$v = $filter->filter($v);
@@ -86,7 +86,7 @@ class ArrayUtility {
 		if (is_array($value)) {
 			foreach ($value as $k => $v) {
 				if (is_array($v)) {
-					$allEmpty = self::isAllLeafsNullOrEmptySting($v);
+					$allEmpty = static::isAllLeafsNullOrEmptySting($v);
 
 					if (!$allEmpty) {
 						return false;
@@ -143,7 +143,7 @@ class ArrayUtility {
         foreach ($aArray1 as $mKey => $mValue) { 
             if (array_key_exists($mKey, $aArray2)) { 
                 if (is_array($mValue)) { 
-                    $aRecursiveDiff = self::arrayRecursiveDiff($mValue, $aArray2[$mKey]); 
+                    $aRecursiveDiff = static::arrayRecursiveDiff($mValue, $aArray2[$mKey]); 
                     if (count($aRecursiveDiff)) { $aReturn[$mKey] = $aRecursiveDiff; } 
                 } else { 
                     if ($mValue != $aArray2[$mKey]) { 

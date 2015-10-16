@@ -1,7 +1,7 @@
 <?php
-namespace VCOMedia\PhpCommon\Utility;
+namespace VCOMedia\PhpCommon\Util;
 
-class FileUtility {
+class FileUtil {
     public static function getSHA1Filename ($filename) {
         $filename = sha1(uniqid(rand(), true)) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         return $filename;

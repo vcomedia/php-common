@@ -1,7 +1,7 @@
 <?php
-namespace VCOMedia\PhpCommon\Utility;
+namespace VCOMedia\PhpCommon\Util;
 
-class TimeUtility {
+class TimeUtil {
 
     public static function ago($time, TranslatorInterface $translator) {
        $lengths = array("60","60","24","7","4.35","12","10");

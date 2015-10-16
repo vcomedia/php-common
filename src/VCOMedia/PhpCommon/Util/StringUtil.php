@@ -1,7 +1,7 @@
 <?php
-namespace VCOMedia\PhpCommon\Utility;
+namespace VCOMedia\PhpCommon\Util;
 
-class StringUtility
+class StringUtil
 {   
     public static function convert_smart_quotes($string) {
         $search = array(chr(145),chr(146),chr(147),chr(148),chr(151));
@@ -10,10 +10,10 @@ class StringUtility
     }
 
     public static function createSlug($str, $removeCommonWords = false) {
-        $str = self::removeAccents($str);
+        $str = static::removeAccents($str);
         $str = strtolower($str);
         if($removeCommonWords) {
-            $str = self::removeCommonWords($str);
+            $str = static::removeCommonWords($str);
         }
         return preg_replace(array('/[^a-zA-Z0-9 -]/', '/[ -]+/', '/^-|-$/'), array('', '-', ''), $str);
     }
@@ -490,9 +490,9 @@ class StringUtility
     public static function makeLinksAnchors($ret) {
     	$ret = ' ' . $ret;
     	// in testing, using arrays here was found to be faster
-    	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is',  'StringUtility::_make_url_clickable_cb', $ret);
-    	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', 'StringUtility::_make_web_ftp_clickable_cb', $ret);
-    	$ret = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', 'StringUtility::_make_email_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is',  'StringUtil::_make_url_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', 'StringUtil::_make_web_ftp_clickable_cb', $ret);
+    	$ret = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', 'StringUtil::_make_email_clickable_cb', $ret);
 
     	// this one is not in an array because we need it to run last, for cleanup of accidental links within links
     	$ret = preg_replace("#(<a( [^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i", "$1$3</a>", $ret);

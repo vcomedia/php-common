@@ -1,5 +1,5 @@
 <?php
-namespace VCOMedia\PhpCommon\Utility;
+namespace VCOMedia\PhpCommon\Util;
 
 ################################################################################
 #
@@ -13,7 +13,7 @@ namespace VCOMedia\PhpCommon\Utility;
 #
 ################################################################################
 
-class FaviconUtility
+class FaviconUtil
 {
     var $ver = '1.1';
     var $site_url = ''; # url of site
