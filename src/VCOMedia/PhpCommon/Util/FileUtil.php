@@ -2,19 +2,19 @@
 namespace VCOMedia\PhpCommon\Util;
 
 class FileUtil {
-    public static function getSHA1Filename ($filename) {
+    public static function getSHA1FileName ($filename) {
         $filename = sha1(uniqid(rand(), true)) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         return $filename;
     }
     
-    public static function sanitize_file_name ($filename) {
+    public static function getSanitizedFileName ($filename) {
         $filename_raw = $filename;
         $special_chars = array("?" , "[" , "]" , "/" , "\\" , "=" , "<" , ">" , ":" , ";" , "," , "'" , "\"" , "&" , "$" , "#" , "*" , "(" , ")" , "|" , "~" , "`" , "!" , "{" , "}" , chr(0));
         $filename = str_replace($special_chars, '', $filename);
-        $filename = StringUtility::removeAccents($filename);
+        $filename = StringUtil::removeAccents($filename);
         $filename = preg_replace('/[\s-]+/', '-', $filename);
         $filename = trim($filename, '.-_');
-        $filename = StringUtility::convert_smart_quotes($filename);
+        $filename = StringUtil::convertSmartQuotes($filename);
         
         // Split the filename into a base and extension[s]
         $parts = explode('.', $filename);
@@ -150,7 +150,7 @@ class FileUtil {
       }
     }
     
-    public static function secure_tmpname($postfix = '.tmp', $prefix = 'tmp', $dir = null) {
+    public static function getSecureTmpName($postfix = '.tmp', $prefix = 'tmp', $dir = null) {
         // validate arguments
         if (! (isset($postfix) && is_string($postfix))) {
             return false;

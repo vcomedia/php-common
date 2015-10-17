@@ -3,7 +3,7 @@ namespace VCOMedia\PhpCommon\Util;
 
 class StringUtil
 {   
-    public static function convert_smart_quotes($string) {
+    public static function convertSmartQuotes($string) {
         $search = array(chr(145),chr(146),chr(147),chr(148),chr(151));
         $replace = array("'","'",'"','"','-');
         return str_replace($search, $replace, $string);
