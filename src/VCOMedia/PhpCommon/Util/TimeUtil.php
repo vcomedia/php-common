@@ -45,7 +45,7 @@ class TimeUtil {
     
     public static function timezoneOffsetSecondsToTimezoneAbbreviation($seconds) {
         $timezoneName = static::timezoneOffsetSecondsToTimezoneName($seconds);
-        $dt = new DateTime('now', new DateTimeZone($timezoneName));
+        $dt = new \DateTime('now', new \DateTimeZone($timezoneName));
         return $dt->format('T');
     }
 }
