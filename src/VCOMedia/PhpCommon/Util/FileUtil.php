@@ -122,7 +122,7 @@ class FileUtil {
         $mtime = - 1;
         $file = null;
 
-        foreach (new RecursiveIteratorIterator($iterator) as $fileinfo) {
+        foreach (new \RecursiveIteratorIterator($iterator) as $fileinfo) {
             if ($fileinfo->isFile()) {
                 if ($fileinfo->getMTime() > $mtime) {
                     $file = $fileinfo->getFilename();
@@ -131,23 +131,6 @@ class FileUtil {
             }
         }
         return $mtime;
-    }
-    
-    public static function rmdirRecursive($dir) {
-       if (is_dir($dir)) {
-         $objects = scandir($dir);
-         foreach ($objects as $object) {
-           if ($object != "." && $object != "..") {
-             if (filetype($dir."/".$object) == "dir"){
-                rrmdir($dir."/".$object);
-             }else{ 
-                unlink($dir."/".$object);
-             }
-           }
-         }
-         reset($objects);
-         rmdir($dir);
-      }
     }
     
     public static function getSecureTmpName($postfix = '.tmp', $prefix = 'tmp', $dir = null) {
